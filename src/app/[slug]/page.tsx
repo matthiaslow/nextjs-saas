@@ -13,7 +13,11 @@ async function getPage(slug: string) {
   return res[0];
 }
 
-export default async function PageView({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: { slug: string };
+}
+
+export default async function PageView({ params }: PageProps) {
   const page = await getPage(params.slug);
 
   if (!page) return <div>Page not found.</div>;
@@ -25,4 +29,3 @@ export default async function PageView({ params }: { params: { slug: string } })
     </main>
   );
 }
-
