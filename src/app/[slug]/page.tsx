@@ -8,7 +8,7 @@ import { use } from 'react';
 
 type Params = Promise<{ slug: string }>;
 
-export default function Page({ params }: { params: Params }) {
+export default async function Page({ params }: { params: Params }) {
   const { slug } = use(params); // required in Next.js 15
 
   const [page] = use(
