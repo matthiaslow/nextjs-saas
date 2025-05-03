@@ -3,8 +3,8 @@ import { directus } from '@/lib/directus';
 import { Page as PageSchema } from '@/lib/schema';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function Page({ params }: { params: { slug: string } }) {
+  const slug = params.slug;
 
   const [page] = await directus.request(
     readItems<PageSchema>('pages', {
