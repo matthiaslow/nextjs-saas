@@ -1,6 +1,18 @@
 import { readItems } from '@directus/sdk';
 import { directus } from '@/lib/directus';
 import { Page } from '@/lib/schema';
+import { notFound } from 'next/navigation';
+
+export async function generateStaticParams() {
+  const pages = await directus.request(readItems<Page>('pages', { filter: { published: { _eq: true } } }));
+  return pages.map((page) => ({ slug: page.slug }));
+}
+
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
 
 async function getPage(slug: string) {
   const res = await directus.request(
@@ -9,18 +21,13 @@ async function getPage(slug: string) {
       limit: 1,
     })
   );
-
   return res[0];
 }
 
-interface PageProps {
-  params: { slug: string };
-}
-
-export default async function PageView({ params }: PageProps) {
+export default async function Page({ params }: PageProps) {
   const page = await getPage(params.slug);
 
-  if (!page) return <div>Page not found.</div>;
+  if (!page) return notFound();
 
   return (
     <main className="p-8 max-w-2xl mx-auto">
