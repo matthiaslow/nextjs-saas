@@ -3,13 +3,11 @@ import { directus } from '@/lib/directus';
 import { Page as PageSchema } from '@/lib/schema';
 import { notFound } from 'next/navigation';
 
-type Props = {
-  params: {
-    slug: string;
-  };
-};
+type Params = Promise<{ slug: string }>;
 
-async function getPage(slug: string) {
+export default async function Page(props: { params: Params }) {
+  const { slug } = await props.params;
+
   const res = await directus.request(
     readItems<PageSchema>('pages', {
       filter: { slug: { _eq: slug }, published: { _eq: true } },
@@ -17,11 +15,7 @@ async function getPage(slug: string) {
     })
   );
 
-  return res[0];
-}
-
-export default async function Page({ params }: Props) {
-  const page = await getPage(params.slug);
+  const page = res[0];
 
   if (!page) return notFound();
 
