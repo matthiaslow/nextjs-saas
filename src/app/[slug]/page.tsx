@@ -1,15 +1,17 @@
+'use client';
+
 import { readItems } from '@directus/sdk';
 import { directus } from '@/lib/directus';
 import { Page as PageSchema } from '@/lib/schema';
 import { notFound } from 'next/navigation';
-import { use } from 'react'; // new in Next.js 15
+import { use } from 'react';
 
 type Params = Promise<{ slug: string }>;
 
 export default function Page({ params }: { params: Params }) {
-  const { slug } = use(params); // ✅ This is now REQUIRED in Next.js 15
+  const { slug } = use(params); // required in Next.js 15
 
-  const page = use(
+  const [page] = use(
     directus.request(
       readItems<PageSchema>('pages', {
         filter: { slug: { _eq: slug }, published: { _eq: true } },
