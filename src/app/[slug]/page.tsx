@@ -1,23 +1,16 @@
-'use client';
-
 import { readItems } from '@directus/sdk';
 import { directus } from '@/lib/directus';
 import { Page as PageSchema } from '@/lib/schema';
 import { notFound } from 'next/navigation';
-import { use } from 'react';
 
-type Params = Promise<{ slug: string }>;
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
-export default async function Page({ params }: { params: Params }) {
-  const { slug } = use(params); // required in Next.js 15
-
-  const [page] = use(
-    directus.request(
-      readItems<PageSchema>('pages', {
-        filter: { slug: { _eq: slug }, published: { _eq: true } },
-        limit: 1,
-      })
-    )
+  const [page] = await directus.request(
+    readItems<PageSchema>('pages', {
+      filter: { slug: { _eq: slug }, published: { _eq: true } },
+      limit: 1,
+    })
   );
 
   if (!page) return notFound();
